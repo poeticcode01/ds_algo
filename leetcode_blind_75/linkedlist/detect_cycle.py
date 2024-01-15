@@ -1,5 +1,9 @@
+from tkinter.tix import ListNoteBook
+from typing import Optional
+
+
 class Solution:
-    def hasCycle(self, head: Optional[ListNode]) -> bool:
+    def hasCycle(self, head: Optional[ListNoteBook]) -> bool:
         node_set = set()
         found = False
         cur = head
