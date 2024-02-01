@@ -6,33 +6,40 @@ class Solution:
         row = len(board)
         col = len(board[0])
         visit_set = set()
-        for cur_row,row_list in enumerate(board):
-            for cur_col , col_itm in enumerate(row_list):
-                visit_set.add((cur_row,cur_col))
-                ans = self.dfs(cur_row,cur_col,col_itm,word,row,col,board,visit_set)
-                visit_set.remove((cur_row,cur_col))
+        for cur_row in range(row):
+            for cur_col in range(col):
+                col_itm = board[cur_row][cur_col]
+                if col_itm != word[0]:
+                    continue
+                board[cur_row][cur_col] = "#"
+                # visit_set.add((cur_row,cur_col))
+                ans = self.dfs(cur_row,cur_col,0,word,row,col,board)
+                # visit_set.remove((cur_row,cur_col))
+                board[cur_row][cur_col] = col_itm
                 if ans:
                     return True
         return False
 
-    def dfs(self,cur_row,cur_col,run_str,word,row,col,board,visit_set):
-        if run_str == word:
+    def dfs(self,cur_row,cur_col,ind,word,row,col,board):
+        # if board[cur_row][cur_col] != word[ind]:
+        #     return False
+        if ind == len(word) - 1:
             return True
 
-        for i in range(cur_row-1,cur_row+2):
-            if i >= row or i < 0:
-                continue 
-            for j in range(cur_col-1,cur_col+2):
-                if j >= col or j < 0:
-                    continue
-                if (i,j) in visit_set:
-                    continue
-                if ((i == cur_row -1) and ((j == cur_col - 1)or (j == cur_col + 1))) or ((i == cur_row + 1) and ((j == cur_col - 1)or (j == cur_col + 1))):
-                    continue
-                visit_set.add((i,j))
-                temp_str = run_str + board[i][j]
-                ans = self.dfs(i,j,temp_str,word,row,col,board,visit_set)
-                if ans:
-                    return True
-                visit_set.remove((i,j))
+        neighbors_list = [(cur_row,cur_col-1),(cur_row,cur_col+1),(cur_row+1,cur_col),(cur_row-1,cur_col)]
+        for neighbrs in neighbors_list:
+            
+            if neighbrs[0] < 0 or neighbrs[0] >= row or neighbrs[1] < 0 or neighbrs[1] >= col:
+                continue
+            if board[neighbrs[0]][neighbrs[1]] == "#":
+                continue
+            placeholder = board[neighbrs[0]][neighbrs[1]]
+            if word[ind+1] != placeholder:
+                continue
+            board[neighbrs[0]][neighbrs[1]] = "#"
+            
+            ans = self.dfs(neighbrs[0],neighbrs[1],ind+1,word,row,col,board)
+            if ans:
+                return True
+            board[neighbrs[0]][neighbrs[1]] = placeholder
         return False
