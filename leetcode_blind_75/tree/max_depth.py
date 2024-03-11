@@ -5,12 +5,13 @@ class Solution:
     def maxDepth(self, root: Optional[TreeNode]) -> int:
         if root is None:
             return 0
-        cur_depth = 1
-        return self.getMaxDepth(root,cur_depth)
-    def getMaxDepth(self, node,cur_depth):
-        ans = cur_depth
+        return self.getMaxDepth(root)
+    def getMaxDepth(self, node):
+        ans = 1
+        lft,rt = 1,1
         if node.left:
-            ans = max(ans,self.getMaxDepth(node.left,cur_depth+1))
+            lft = 1 + self.getMaxDepth(node.left)
         if node.right:
-            ans = max(ans,self.getMaxDepth(node.right,cur_depth+1))
+            rt = 1 + self.getMaxDepth(node.right)
+        ans = max(lft,rt)
         return ans
