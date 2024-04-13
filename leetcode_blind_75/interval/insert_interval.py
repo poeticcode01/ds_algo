@@ -21,40 +21,34 @@ class Solution:
             if  cur_interval[1] < newInterval[0]:
                 ans.append(cur_interval)
 
-            elif not flag and cur_interval[0] > newInterval[0]:
-                flag = True
-                min_itm = newInterval[0]
-                while ind  < len(intervals) and newInterval[1] > intervals[ind][1]:
-                    ind +=1
-                if ind == len(intervals):
+            else:
+                if cur_interval[0] > newInterval[1]:
                     ans.append(newInterval)
+                    ans.extend(intervals[ind:])
+                    break
+                elif cur_interval[0] == newInterval[1] or cur_interval[1] >= newInterval[1]:
+                    min_itm = min(newInterval[0],cur_interval[0])
+                    ans.append([min_itm,cur_interval[1]])
+                    ans.extend(intervals[ind+1:])
+                    break
                 else:
-                    if newInterval[1] >= intervals[ind][0]:
-                        ans.append([min_itm,intervals[ind][1]])
-                    else:
-                        ans.append([min_itm,newInterval[1]])
-                        ans.append(intervals[ind])
-
-            elif cur_interval[0] <= newInterval[0] and  cur_interval[1] >= newInterval[0]:
-                flag = True
-                if newInterval[1] < cur_interval[1]:
-                    ans.append(cur_interval)
-                else:
-                    
-                    min_itm = min(cur_interval[0],newInterval[0])
-                    ind +=1
-                    while ind  < len(intervals) and newInterval[1] > intervals[ind][1]:
+                    # print(ind,"h")
+                    min_itm = min(newInterval[0],cur_interval[0])
+                    while ind < len(intervals) and cur_interval[1] < newInterval[1]:
                         ind +=1
+                        if ind < len(intervals):
+                            cur_interval = intervals[ind]
+                    # print(ind,"th")
                     if ind == len(intervals):
                         ans.append([min_itm,newInterval[1]])
                     else:
-                        if newInterval[1] >= intervals[ind][0]:
-                            ans.append([min_itm,intervals[ind][1]])
+                        if newInterval[1] >= cur_interval[0]:
+                            ans.append([min_itm,cur_interval[1]])
+                            ans.extend(intervals[ind+1:])
                         else:
                             ans.append([min_itm,newInterval[1]])
-                            ans.append(intervals[ind])
-            else: 
-                ans.append(cur_interval)
+                            ans.extend(intervals[ind:])
+                    break
             ind +=1
 
         return ans
