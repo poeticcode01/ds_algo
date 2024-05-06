@@ -1,21 +1,17 @@
 from collections import defaultdict
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
-        run_freq = defaultdict(int)
-        strt = 0
-        end = 0 
+    
+        i = 0
         ans = 0
-
-        while end < len(s):
-            run_freq[s[end]] +=1
-            if run_freq[s[end]] > 1:
-                while strt < end and s[strt] != s[end]:
-                    run_freq[s[strt]] -=1
-                    strt +=1
-                if strt != end:
-                    strt +=1
-                run_freq[s[end]] = 1
-
-            ans = max(ans,end-strt+1)
-            end +=1
+        freq_dict = defaultdict(int)
+        j = 0
+        while i < len(s):
+            freq_dict[s[i]] +=1
+            while freq_dict[s[i]] > 1:
+                freq_dict[s[j]] -=1
+                j +=1
+            temp = i-j+1
+            ans = max(ans,temp)
+            i +=1
         return ans
