@@ -25,11 +25,13 @@ night_time = "PM"
 
 def split_meeting_day(cur_day,cur_start_time,cur_end_time,daywise_meeting_dict,cur_meeting):
     if cur_end_time[1] == day_time and cur_start_time[1] == night_time:
+            
             last_meeting = ["0:00 AM",cur_meeting[1]]
             daywise_meeting_dict[cur_day].append([cur_meeting[0],"11:59 PM"])
             cur_day +=1
             daywise_meeting_dict[cur_day].append(last_meeting)
     elif cur_end_time[1] == cur_start_time[1] and cur_end_time[0] < cur_start_time[0]:
+        
         last_meeting = ["0:00 AM",cur_meeting[1]]
         daywise_meeting_dict[cur_day].append([cur_meeting[0],"11:59 PM"])
         cur_day +=1
