@@ -5,50 +5,33 @@ class Solution:
     def insert(self, intervals: List[List[int]], newInterval: List[int]) -> List[List[int]]:
         if not intervals:
             return [newInterval]
+
         if newInterval[1] < intervals[0][0]:
-            ans = [newInterval]+intervals
-            return ans
+            return [newInterval] + intervals
         if newInterval[0] > intervals[-1][1]:
             intervals.append(newInterval)
             return intervals
 
-
         ans = []
-        ind = 0
-        flag = False
-        while ind  < len(intervals):
-            cur_interval = intervals[ind]
-            if  cur_interval[1] < newInterval[0]:
-                ans.append(cur_interval)
-
+        i = 0
+        while i < len(intervals):
+            if intervals[i][1] < newInterval[0]:
+                ans.append(intervals[i])
             else:
-                if cur_interval[0] > newInterval[1]:
+                if newInterval[1] <  intervals[i][0]:
                     ans.append(newInterval)
-                    ans.extend(intervals[ind:])
-                    break
-                elif cur_interval[0] == newInterval[1] or cur_interval[1] >= newInterval[1]:
-                    min_itm = min(newInterval[0],cur_interval[0])
-                    ans.append([min_itm,cur_interval[1]])
-                    ans.extend(intervals[ind+1:])
-                    break
+                    ans.extend(intervals[i:])
+                    return ans
                 else:
-                    # print(ind,"h")
-                    min_itm = min(newInterval[0],cur_interval[0])
-                    while ind < len(intervals) and cur_interval[1] < newInterval[1]:
-                        ind +=1
-                        if ind < len(intervals):
-                            cur_interval = intervals[ind]
-                    # print(ind,"th")
-                    if ind == len(intervals):
-                        ans.append([min_itm,newInterval[1]])
-                    else:
-                        if newInterval[1] >= cur_interval[0]:
-                            ans.append([min_itm,cur_interval[1]])
-                            ans.extend(intervals[ind+1:])
-                        else:
-                            ans.append([min_itm,newInterval[1]])
-                            ans.extend(intervals[ind:])
-                    break
-            ind +=1
-
-        return ans
+                    strt = min(newInterval[0],intervals[i][0])
+                    end = max(newInterval[1],intervals[i][1])
+                    j = i+1
+                    while j < len(intervals) and intervals[j][0] <= end:
+                        end = max(end,intervals[j][1])
+                        j +=1
+                    ans.append([strt,end])
+                    ans.extend(intervals[j:])
+                    return ans
+            i +=1
+        
+        return ans.extend(newInterval)
