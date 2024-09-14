@@ -1,37 +1,42 @@
+from collections import deque
 from typing import List
-
-
 class Solution:
     def numIslands(self, grid: List[List[str]]) -> int:
-        self.row_cnt = len(grid)
-        self.col_cnt = len(grid[0])
-        self.grid = grid
-
-        self.visit_set = set()
         ans = 0
-        for row in range(self.row_cnt):
-            for col in range(self.col_cnt):
-                if (row,col)  in self.visit_set or grid[row][col] == "0":
+        
+        visited = set()
+        row = len(grid)
+        col = len(grid[0])
+        for i in range(row):
+            for j in range(col):
+                if grid[i][j] == "1" and (i,j) not in visited:
+                    ans +=1
+                    # print(visited,(i,j))
+                    visited.add((i,j))
+                    dq = deque([(i,j)])
+                    while dq:
+                        cur_row,cur_col = dq.popleft()
+                        # print(cur_row,cur_col)
+                        neighbors = [(cur_row-1,cur_col),(cur_row+1,cur_col),
+                                    (cur_row,cur_col-1),(cur_row,cur_col+1)]
+                        # print(neighbors)
+                        for frnd in neighbors:
+                            # print(frnd,(i,j))
+                            
+                            if frnd[0] >= row or frnd[0] < 0 or frnd[1] >= col or frnd[1] < 0:
+                                # print("neighbor_friends",frnd,(i,j))
+                                continue
+                            # print("neighbor_friends",frnd,(i,j))
+                            if grid[frnd[0]][frnd[1]] == "1" and frnd not in visited:
+                                # print("here")
+                                visited.add(frnd)
+                                dq.append(frnd)
+
+
+
+                else:
                     continue
-                ans +=1
-                self.visit_set.add((row,col))
-                self.dfs(row,col)
-
         return ans
-
-    def dfs(self,row,col):
-        if row < 0 or col < 0 or row >= self.row_cnt or col >= self.col_cnt:
-            return
-
-        neighbors = [(row,col-1),(row,col+1),(row-1,col),(row+1,col)]
-
-        for frnd in neighbors:
-            if frnd[0] < 0 or frnd[1] < 0 or frnd[0] >= self.row_cnt or frnd[1] >= self.col_cnt:
-                continue
-            if frnd in self.visit_set or self.grid[frnd[0]][frnd[1]] == "0":
-                continue
-            self.visit_set.add(frnd)
-            self.dfs(frnd[0],frnd[1])
 
 if __name__ == "__main__":
     grid = [["1","1","0","0","0"],["1","1","0","0","0"],["0","0","1","0","0"],["0","0","0","1","1"]]
