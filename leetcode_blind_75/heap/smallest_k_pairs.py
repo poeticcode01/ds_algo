@@ -3,38 +3,20 @@ from typing import List
 import heapq
 class Solution:
     def kSmallestPairs(self, nums1: List[int], nums2: List[int], k: int) -> List[List[int]]:
-        cur_ind = 0
-        max_heap = []
-        ans = []
-        while cur_ind < len(nums1):
-
-            flag = False
-            for itm in nums2:
-                cur_pair_sum = nums1[cur_ind]+itm
-                # print(len(max_heap))
-                if len(max_heap) < k:
-                    flag = True     
-                    heapq.heappush(max_heap,(-cur_pair_sum,[nums1[cur_ind],itm]))
-                else:     
-                    if cur_pair_sum  < -max_heap[0][0]:
-                        flag = True
-                        temp = heapq.heappop(max_heap)
-                        heapq.heappush(max_heap,(-cur_pair_sum,[nums1[cur_ind],itm]))
-                    else:
-                        break
-
-            if not flag:
-                break
-
-            cur_ind +=1
-
-        while max_heap:
-            temp = heapq.heappop(max_heap)
-            ans.append(temp[1])
+        min_heap = []
+        for i in range(min(k,len(nums1))):
+            heapq.heappush(min_heap,(nums1[i]+nums2[0],i,0))
         
-        # print(ans)
+        ans = []
+        while min_heap and len(ans) < k:
+            pair_sum,i,j = heapq.heappop(min_heap)
+            ans.append([nums1[i],nums2[j]])
 
-        return list(reversed(ans))
+            if j + 1 < len(nums2):
+                heapq.heappush(min_heap,(nums1[i]+nums2[j+1],i,j+1))
+
+        return ans
+        
     
 if __name__ == "__main__":
     nums1 = [1,2,4,5,6]
