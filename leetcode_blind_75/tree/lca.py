@@ -7,26 +7,41 @@ class TreeNode:
 
 class Solution:
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
-        self.lca = None
-        self.recur_lca(root,p,q)
-
+        self.lca = False
+        self.dfs(root,p,q)
         return self.lca
 
-    def recur_lca(self,root,p,q):
-        if not root:
-            return False
-        if self.lca:
-            return True
-        cur_node = (root == p) or (root == q)
-        lft = self.recur_lca(root.left,p,q)
-        if self.lca:
-            return True
-        rt = self.recur_lca(root.right,p,q)
+    def dfs(self,node,p,q):
 
-        if lft and rt or (lft and cur_node) or (rt and cur_node):
+        if not node:
+            return False,False
+
+        found_p =   False
+        found_q = False
+
+        if node == p:
+            found_p = True
+            # print("found p",node.val)
+
+        if node == q:
+            found_q = True
+            
+
+        if not found_p or not found_q:
+            left_found_p ,left_found_q = self.dfs(node.left,p,q)
+
+        found_p = found_p or left_found_p
+        found_q = found_q or left_found_q
+
+        if not found_p or not found_q:
+            right_found_p ,right_found_q = self.dfs(node.right,p,q)
+
+        found_p = found_p or right_found_p
+        found_q = found_q or right_found_q
+
+
+        if found_p and found_q:
+            # print("found",node.val)
             if not self.lca:
-                self.lca = root
-        
-        if lft or rt or cur_node:
-            return True
-        return False
+                self.lca = node
+        return found_p,found_q
