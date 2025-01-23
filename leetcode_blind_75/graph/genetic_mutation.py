@@ -1,25 +1,12 @@
 from collections import defaultdict,deque
 from typing import List
 
+
+
 class Solution:
     def minMutation(self, startGene: str, endGene: str, bank: List[str]) -> int:
-        gene_graph = defaultdict(list)
-
-        for cur_gene in bank:
-            diff_count = self.count_diff(startGene,cur_gene)
-            if diff_count == 1:
-                gene_graph[cur_gene].append(startGene)
-                gene_graph[startGene].append(cur_gene)
-                if cur_gene == endGene:
-                    return 1
-
-        for ind,cur_gene in enumerate(bank):
-            for next_gene in bank[ind+1:]:
-                diff_count = self.count_diff(next_gene,cur_gene)
-                if diff_count == 1:
-                    gene_graph[cur_gene].append(next_gene)
-                    gene_graph[next_gene].append(cur_gene)
-
+        
+        gene_set = set(bank)
         # print(gene_graph)
         dq = deque([startGene, None])
         cur_level = 0
@@ -35,20 +22,13 @@ class Solution:
                 continue
             if k == endGene:
                 return cur_level
-            for frnd in gene_graph[k]:
-                if frnd not in visited:
-                    if frnd == endGene:
-                        return cur_level + 1
-                    visited.add(frnd)
-                    dq.append(frnd)
+            for ind, itm in enumerate(k):
+                for gene_char in "ACGT":
+                    temp_gene = k[:ind] + gene_char + k[ind+1:]
+                    if temp_gene in gene_set and temp_gene not in visited:
+                        if temp_gene == endGene:
+                            return cur_level + 1
+                        visited.add(temp_gene)
+                        dq.append(temp_gene)
+                
         return -1
-
-
-        
-
-    def count_diff(self,gene1,gene2):
-        count = 0
-        for char1, char2 in zip(gene1, gene2):
-            if char1 != char2:
-                count +=1
-        return count
