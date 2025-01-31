@@ -1,6 +1,4 @@
 from typing import List
-
-
 class Solution:
     def insert(self, intervals: List[List[int]], newInterval: List[int]) -> List[List[int]]:
         if not intervals:
@@ -9,8 +7,7 @@ class Solution:
         if newInterval[1] < intervals[0][0]:
             return [newInterval] + intervals
         if newInterval[0] > intervals[-1][1]:
-            intervals.append(newInterval)
-            return intervals
+            return intervals + [newInterval]
 
         ans = []
         i = 0
@@ -19,9 +16,7 @@ class Solution:
                 ans.append(intervals[i])
             else:
                 if newInterval[1] <  intervals[i][0]:
-                    ans.append(newInterval)
-                    ans.extend(intervals[i:])
-                    return ans
+                    return ans + [newInterval] + intervals[i:]
                 else:
                     strt = min(newInterval[0],intervals[i][0])
                     end = max(newInterval[1],intervals[i][1])
@@ -29,9 +24,5 @@ class Solution:
                     while j < len(intervals) and intervals[j][0] <= end:
                         end = max(end,intervals[j][1])
                         j +=1
-                    ans.append([strt,end])
-                    ans.extend(intervals[j:])
-                    return ans
+                    return ans + [[strt,end]] + intervals[j:]
             i +=1
-        
-        return ans.extend(newInterval)
