@@ -11,7 +11,7 @@ class Solution:
         i = 1
         
         while i < len(nums):
-            if not (nums[i] >= nums[i-1] and nums[i]-nums[i-1] <= 1):
+            if  nums[i]-nums[i-1] > 1:
                 if end > strt:
                     ans.append(f"{nums[strt]}->{nums[end]}")
                 else:
