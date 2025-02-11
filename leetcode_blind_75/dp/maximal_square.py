@@ -19,15 +19,15 @@ class Solution:
             for j in range(col_len):
                 if dp[i][j] == 1:
                     up = 0
-                    down = 0
+                    left = 0
                     diag = 0
                     if i-1 >= 0:
                         up = dp[i-1][j]
                     if j - 1 >= 0:
-                        down = dp[i][j-1]
+                        left = dp[i][j-1]
                     if i-1 >= 0 and j - 1 >= 0:
                         diag = dp[i-1][j-1]
-                    dp[i][j] = min(min(up,down),diag)+1
+                    dp[i][j] = min(min(up,left),diag)+1
                     # print(dp[i][j])
                     ans = max(ans,dp[i][j]**2)
         return ans
