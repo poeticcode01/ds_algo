@@ -3,35 +3,37 @@ from ast import List
 
 class Solution:
     def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
-        dp = []
-        row = len(obstacleGrid)
-        col = len(obstacleGrid[0])
+        row_cnt = len(obstacleGrid)
+        col_cnt = len(obstacleGrid[0])
 
-        for i in range(row):
-            temp = []
-            for j in range(col):
-                temp.append(0)
-            dp.append(temp)
+        dp =[[0]*col_cnt for i in range(row_cnt)]
+        dp[row_cnt-1][col_cnt-1] = 1 if obstacleGrid[row_cnt-1][col_cnt-1] == 0 else 0
 
-        cur_col = col - 1
-        while cur_col >= 0:
-            cur_row = row - 1
-            while cur_row >= 0:
-                rt = 0
-                down = 0
-                if cur_col + 1 < col:
-                    if obstacleGrid[cur_row][cur_col + 1] == 0:
-                        rt = dp[cur_row][cur_col + 1]
-                if cur_row + 1 < row:
-                    if obstacleGrid[cur_row+1][cur_col] == 0:
-                        down = dp[cur_row+1][cur_col]
-                if obstacleGrid[cur_row][cur_col] == 0:
-                    
-                    if cur_row == row - 1 and cur_col == col - 1:
-                        dp[cur_row][cur_col] = 1
-                    else:
-                        dp[cur_row][cur_col] = rt + down
+        i = row_cnt-2
+        while i >= 0:
+            if obstacleGrid[i][col_cnt-1] == 1:
+                i -=1
+                continue
+            dp[i][col_cnt-1] = dp[i+1][col_cnt-1]
+            i -=1
+        
+        i = col_cnt-2
+        while i >= 0:
+            if obstacleGrid[row_cnt-1][i] == 1:
+                i -=1
+                continue
+            dp[row_cnt-1][i] = dp[row_cnt-1][i+1]
+            i -=1
 
-                cur_row -=1
-            cur_col -=1
+        i = col_cnt-2
+        while i >= 0:
+            j = row_cnt-2
+            while j >= 0:
+                if obstacleGrid[j][i] == 1:
+                    j -=1
+                    continue
+                dp[j][i] = dp[j+1][i]+dp[j][i+1]
+                j -=1
+            i -=1
+        
         return dp[0][0]
