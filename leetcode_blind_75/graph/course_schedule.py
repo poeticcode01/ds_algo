@@ -1,27 +1,28 @@
 from collections import defaultdict
-import heapq
 from typing import List
-
 class Solution:
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
-
-        indegree = defaultdict(int)
-        edge_map = defaultdict(list)
-        min_heap = []
-        for cur_course in prerequisites:
-            indegree[cur_course[1]] +=1
-            edge_map[cur_course[0]].append(cur_course[1])
-
+        indegree = dict()
+        course_graph = defaultdict(list)
         for course in range(numCourses):
-            if indegree[course] == 0:
-                heapq.heappush(min_heap,course)
-        ans = 0
-        while min_heap:
-            k = heapq.heappop(min_heap)
-            ans +=1
-            for frnd in edge_map[k]:
-                indegree[frnd] -=1
-                if indegree[frnd] == 0:
-                    heapq.heappush(min_heap,frnd)
+            indegree[course] =0
 
-        return ans == numCourses
+        for course_prereq in prerequisites:
+            indegree[course_prereq[0]] +=1
+            course_graph[course_prereq[1]].append(course_prereq[0])
+
+        zero_degree_set = set()
+        for course, degree in indegree.items():
+            if degree == 0:
+                zero_degree_set.add(course)
+
+        course_taken = 0
+        while len(zero_degree_set) > 0:
+            course_taken +=1
+            cur_course = zero_degree_set.pop()
+            for dependent_course in course_graph[cur_course]:
+                indegree[dependent_course] -=1
+                if indegree[dependent_course] == 0:
+                    zero_degree_set.add(dependent_course)
+        
+        return course_taken==numCourses
