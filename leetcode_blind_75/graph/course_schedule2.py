@@ -2,38 +2,28 @@ from collections import defaultdict,deque
 from typing import List
 class Solution:
     def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
-
+        indegree = dict()
         course_graph = defaultdict(list)
-        indegree = defaultdict(int)
-        all_course_set = set()
-        if len(prerequisites) == 0:
-            return [i for i in range(numCourses)]
+        for course in range(numCourses):
+            indegree[course] =0
 
-        for _, courses in enumerate(prerequisites):
+        for course_prereq in prerequisites:
+            indegree[course_prereq[0]] +=1
+            course_graph[course_prereq[1]].append(course_prereq[0])
 
-            course_graph[courses[1]].append(courses[0])
-            indegree[courses[0]] +=1
+        zero_degree_set = set()
+        for course, degree in indegree.items():
+            if degree == 0:
+                zero_degree_set.add(course)
 
-            all_course_set.add(courses[0])
-            all_course_set.add(courses[1])
-
-
-        dq = deque([])
-        for cur_course in range(numCourses):
-            if indegree[cur_course] == 0:
-                dq.append(cur_course)
-
-        ordered_courses = []
-        while dq:
-            k = dq.popleft()
-            ordered_courses.append(k)
-
-            for frnd in course_graph[k]:
-                indegree[frnd] -=1
-                if indegree[frnd] == 0:
-                    dq.append(frnd)
-
-        if len(ordered_courses) == numCourses:
-            return ordered_courses
-
-        return []
+        course_taken = []
+        while len(zero_degree_set) > 0:
+            # course_taken +=1
+            cur_course = zero_degree_set.pop()
+            course_taken.append(cur_course)
+            for dependent_course in course_graph[cur_course]:
+                indegree[dependent_course] -=1
+                if indegree[dependent_course] == 0:
+                    zero_degree_set.add(dependent_course)
+        
+        return course_taken if len(course_taken)==numCourses else []
