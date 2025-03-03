@@ -29,7 +29,8 @@ class Solution:
 
         if not found_p or not found_q:
             left_found_p ,left_found_q = self.dfs(node.left,p,q)
-
+        if self.lca:
+            return True , True
         found_p = found_p or left_found_p
         found_q = found_q or left_found_q
 
@@ -45,3 +46,4 @@ class Solution:
             if not self.lca:
                 self.lca = node
         return found_p,found_q
+
