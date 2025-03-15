@@ -2,42 +2,27 @@ from collections import deque
 from typing import List
 class Solution:
     def numIslands(self, grid: List[List[str]]) -> int:
-        ans = 0
-        
+        row_cnt = len(grid)
+        col_cnt = len(grid[0])
+
         visited = set()
-        row = len(grid)
-        col = len(grid[0])
-        for i in range(row):
-            for j in range(col):
-                if grid[i][j] == "1" and (i,j) not in visited:
-                    ans +=1
-                    # print(visited,(i,j))
-                    visited.add((i,j))
-                    dq = deque([(i,j)])
-                    while dq:
-                        cur_row,cur_col = dq.popleft()
-                        # print(cur_row,cur_col)
-                        neighbors = [(cur_row-1,cur_col),(cur_row+1,cur_col),
-                                    (cur_row,cur_col-1),(cur_row,cur_col+1)]
-                        # print(neighbors)
-                        for frnd in neighbors:
-                            # print(frnd,(i,j))
-                            
-                            if frnd[0] >= row or frnd[0] < 0 or frnd[1] >= col or frnd[1] < 0:
-                                # print("neighbor_friends",frnd,(i,j))
-                                continue
-                            # print("neighbor_friends",frnd,(i,j))
-                            if grid[frnd[0]][frnd[1]] == "1" and frnd not in visited:
-                                # print("here")
-                                visited.add(frnd)
-                                dq.append(frnd)
+        dirs = [(-1,0),(1,0),(0,-1),(0,1)]
+        island_count = 0
 
-
-
-                else:
+        for cur_row in range(row_cnt):
+            for cur_col in range(col_cnt):
+                if (cur_row,cur_col) in visited or grid[cur_row][cur_col] == "0":
                     continue
-        return ans
+                visited.add((cur_row,cur_col))
+                dq = deque([(cur_row,cur_col)])
+                island_count +=1
+                while dq:
+                    k = dq.popleft()
+                    for cur_dir in dirs:
+                        new_row = k[0] + cur_dir[0]
+                        new_col = k[1] + cur_dir[1]
+                        if (0<=new_row<row_cnt) and (0<=new_col<col_cnt) and (new_row,new_col) not in visited and grid[new_row][new_col] == "1":
+                            visited.add((new_row,new_col))
+                            dq.append((new_row,new_col))
 
-if __name__ == "__main__":
-    grid = [["1","1","0","0","0"],["1","1","0","0","0"],["0","0","1","0","0"],["0","0","0","1","1"]]
-    Solution().numIslands(grid)
+        return island_count
